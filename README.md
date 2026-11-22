@@ -1,129 +1,111 @@
-# AI Intelligence Data Pipeline
+<div align="center">
 
-An enterprise-grade, source-verifiable intelligence collection and processing platform built with Python 3.11, asyncio, Pydantic v2, and SQLite.
+# 🧠 AI Intelligence Data Pipeline
 
-The pipeline discovers, extracts, validates, normalizes, deduplicates, and stores intelligence across five critical AI domains, generating six structured export tabs (Google Sheets / CSV / JSONL):
-1. **AI Startups** (1,000+ verifiable companies and venture-backed organizations)
-2. **AI Products** (1,000+ AI models, applications, and frameworks)
-3. **AI Research Papers** (1,000+ ArXiv preprints across machine learning disciplines)
-4. **AI Jobs** (Active postings verified within a strict rolling 24-hour UTC window)
-5. **AI News** (Articles and breaking discussions verified within a rolling 24-hour UTC window)
-6. **Entity Mapping Log** (Full audit trail of canonical name resolution and fuzzy matching)
+**An enterprise-grade, source-verifiable intelligence collection and processing platform for the AI ecosystem.**
 
----
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![asyncio](https://img.shields.io/badge/async-asyncio-4B8BBE)](https://docs.python.org/3/library/asyncio.html)
+[![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-WAL-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Tests](https://img.shields.io/badge/tests-pytest-0A9EDC?logo=pytest&logoColor=white)](https://docs.pytest.org/)
 
-## 1. Quick Start
+[Quick Start](#-quick-start) •
+[Features](#-key-features) •
+[Architecture](#-architecture) •
+[Web Terminal](#-aether-ai-intelligence-terminal) •
+[API](#-api-reference) •
+[Scaling](#-scaling-to-500000-records)
 
-### 1.1. Prerequisites
-- Python 3.11+
-- Git
-- Docker & Docker Compose (optional for containerized deployment)
-
-### 1.2. Local Installation
-```bash
-# 1. Clone repository
-git clone https://github.com/your-username/ai-intelligence-pipeline.git
-cd ai-intelligence-pipeline
-
-# 2. Create virtual environment using uv or python3.11 venv
-uv venv --python 3.11 .venv
-source .venv/bin/activate
-
-# 3. Install dependencies
-uv pip install -r requirements.txt
-```
-
-### 1.3. Environment Configuration
-Copy the sample environment file:
-```bash
-cp .env.example .env
-```
-Configure your credentials in `.env` (all keys are optional; the pipeline features automatic fallbacks):
-```ini
-ENVIRONMENT=development
-LOG_LEVEL=INFO
-
-# LLM Providers (Priority: Gemini -> Groq -> DeepSeek)
-GEMINI_API_KEY=your_gemini_api_key
-GROQ_API_KEY=your_groq_api_key
-DEEPSEEK_API_KEY=your_deepseek_api_key
-
-# GitHub Token (elevates search rate limits)
-GITHUB_TOKEN=your_github_token
-
-# Google Sheets Export (optional service account)
-GOOGLE_APPLICATION_CREDENTIALS=
-GOOGLE_SPREADSHEET_ID=
-```
+</div>
 
 ---
 
-## 2. Running the Pipeline
+## 📑 Table of Contents
 
-### 2.1. Quick Test Run (Smoke Test)
-Execute an accelerated run collecting ~15 records per category to verify connectivity, validation, database insertion, and file exports:
-```bash
-python src/main.py --quick-test
-```
-
-### 2.2. Full Production Run (1,000+ Targets)
-Execute the complete data pipeline targeting 1,000+ startups, 1,000+ products, 1,000+ papers, and all qualifying 24h jobs and news:
-```bash
-python src/main.py --target-startups 1000 --target-products 1000 --target-papers 1000
-```
-
-### 2.3. Launch FastAPI Server & Web Terminal Interface
-```bash
-python src/main.py --api --port 8000
-```
-Open your browser to `http://localhost:8000` to access the full **Aether AI Intelligence Terminal**:
-- **Bloomberg / Linear Dark UI**: High-density terminal aesthetics, 6 overview metric cards, responsive container tables.
-- **Global Command Palette (`⌘K` / `Ctrl+K`)**: Universal search across all entities, papers, jobs, and tools.
-- **AI Model Benchmark Comparison**: Multi-select up to 4 models from the Products table for a side-by-side architectural matrix.
-- **Entity Resolution & Manual Override**: Audit fuzzy matching scores and execute manual canonical mapping corrections via `POST /api/mappings/correct`.
-- **Slide-over Inspection Drawer**: Deep metadata inspection, permalink sharing (`#<tab>/<id>`), and raw JSON provenance viewer.
-- **11-Stage Pipeline Ingestion Modal**: Real-time progress bar, animated step indicators, and live log terminal streaming.
-- **Interactive Chart.js Analytics**: Multi-angle distribution charts for funding stages, model task pipelines, ArXiv sub-disciplines, remote workplace ratio, and entity confidence tiers.
-- **System Diagnostics & Export Hub**: View database size, WAL mode, table row counts, masked provider credentials, and download or regenerate exports.
-
-API documentation is also available:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-- Health Check: `http://localhost:8000/health`
-- Statistics: `http://localhost:8000/stats`
-
-### 2.4. Docker Deployment
-```bash
-docker-compose up --build -d
-```
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Architecture](#-architecture)
+- [Quick Start](#-quick-start)
+- [Configuration](#-configuration)
+- [Running the Pipeline](#-running-the-pipeline)
+- [Aether AI Intelligence Terminal](#-aether-ai-intelligence-terminal)
+- [API Reference](#-api-reference)
+- [Output Tabs & Files](#-output-tabs--files)
+- [Entity Resolution](#-entity-resolution)
+- [24-Hour Freshness Window](#-strict-24-hour-freshness-window)
+- [Multi-Provider LLM Fallback](#-multi-provider-llm-fallback)
+- [Testing](#-testing)
+- [Docker Deployment](#-docker-deployment)
+- [Scaling to 500,000+ Records](#-scaling-to-500000-records)
+- [Documentation](#-documentation)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 3. Test Suite
+## 🔭 Overview
 
-Run the complete test suite covering schema compliance, entity resolution, fuzzy matching, date extraction, and 24-hour freshness rules:
-```bash
-pytest -v tests/
-```
+The pipeline **discovers, extracts, validates, normalizes, deduplicates, and stores** intelligence across five critical AI domains, then exports six structured tabs to **Google Sheets, CSV, and JSONL**.
+
+| # | Domain | Coverage | Source of truth |
+|---|--------|----------|-----------------|
+| 1 | 🚀 **AI Startups** | 1,000+ verifiable companies and venture-backed organizations | Crawled web sources |
+| 2 | 🧩 **AI Products** | 1,000+ models, applications, and frameworks | Hugging Face, GitHub |
+| 3 | 📄 **AI Research Papers** | 1,000+ preprints across ML disciplines | ArXiv |
+| 4 | 💼 **AI Jobs** | Active postings verified in a rolling **24h UTC** window | Job boards |
+| 5 | 📰 **AI News** | Articles and discussions verified in a rolling **24h UTC** window | RSS feeds |
+| 6 | 🔗 **Entity Mapping Log** | Full audit trail of canonical name resolution | Generated by the pipeline |
 
 ---
 
-## 4. Architecture & Key Features
+## ✨ Key Features
+
+- ⚡ **Fully asynchronous**: `asyncio`-based crawlers for ArXiv, Hugging Face, GitHub, job boards, and RSS.
+- 🧾 **Source-verifiable**: raw crawler payloads are preserved as evidence in `data/raw/`.
+- 🛡️ **Strict validation**: Pydantic v2 models with validators for schema compliance.
+- 🕒 **Honest freshness**: publication timestamps are verified, and collection time is never substituted.
+- 🧬 **Entity resolution**: RapidFuzz canonical matching with legal-suffix stripping and an auditable log.
+- 🤖 **Resilient LLM layer**: Gemini → Groq → DeepSeek fallback, plus a deterministic mode with no keys.
+- 🗄️ **WAL-mode SQLite** repository behind a PostgreSQL-ready interface.
+- 📤 **Multi-format export**: CSV, JSONL, and optional live Google Sheets sync.
+- 🖥️ **Built-in web terminal**: Bloomberg / Linear-style dark UI served by FastAPI.
+- 🧪 **20+ unit and integration tests** covering schema, matching, dates, and freshness.
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart LR
+    A[Crawlers<br/>ArXiv · HF · GitHub<br/>Jobs · RSS] --> B[Extractors<br/>HTML cleanup · UTC dates]
+    B --> C[LLM Layer<br/>Gemini → Groq → DeepSeek]
+    C --> D[Validators<br/>Freshness · Schema · Dedup]
+    D --> E[Entity Resolution<br/>RapidFuzz]
+    E --> F[(SQLite WAL)]
+    F --> G[Exporters<br/>CSV · JSONL · Sheets]
+    F --> H[FastAPI + Web Terminal]
+    A -. raw evidence .-> R[(data/raw)]
+```
+
+### Project Layout
 
 ```
 ai-intelligence-pipeline/
 ├── config/
 │   └── settings.py              # Pydantic BaseSettings & secret masking
 ├── src/
-│   ├── crawlers/                # Async crawlers for ArXiv, HF, GitHub, Jobs, RSS
-│   ├── extractors/              # HTML boiler-plate stripping & UTC date parser
-│   ├── llm/                     # Gemini/Groq/DeepSeek provider fallback & chunker
+│   ├── crawlers/                # Async crawlers: ArXiv, HF, GitHub, Jobs, RSS
+│   ├── extractors/              # HTML boilerplate stripping & UTC date parser
+│   ├── llm/                     # Gemini/Groq/DeepSeek fallback & chunker
 │   ├── models/                  # Pydantic v2 data models with validators
-│   ├── entity_resolution/       # RapidFuzz canonical matcher & legal suffix stripper
-│   ├── validators/              # Freshness window, deduplication & schema validation
+│   ├── entity_resolution/       # RapidFuzz canonical matcher & suffix stripper
+│   ├── validators/              # Freshness window, dedup & schema validation
 │   ├── database/                # WAL SQLite repository & PostgreSQL-ready interface
-│   ├── exporters/               # 6-Tab CSV, JSONL & Google Sheets API exporters
-│   ├── pipeline.py              # End-to-end asynchronous pipeline orchestrator
+│   ├── exporters/               # 6-tab CSV, JSONL & Google Sheets exporters
+│   ├── pipeline.py              # End-to-end async pipeline orchestrator
 │   └── main.py                  # CLI and FastAPI endpoints
 ├── tests/                       # 20+ unit and integration tests
 ├── data/
@@ -131,44 +113,272 @@ ai-intelligence-pipeline/
 │   └── processed/               # 6 standardized CSV and JSONL files
 └── docs/
     ├── architecture.md          # System design & 500k+ scalability transition
-    └── limitations.md           # Transparent API limits & freshness constraints
+    └── limitations.md           # API limits & freshness constraints
 ```
-
-### 4.1. Entity Resolution
-- Strips legal noise suffixes (`Inc`, `LLC`, `Corp`, `Ltd`, `GmbH`, `PBC`, `Technologies`).
-- Leverages RapidFuzz token sorting with configurable similarity thresholds ($\ge 85\%$).
-- Generates a persistent, auditable mapping log tracking `raw_name`, `canonical_name`, `entity_type`, `source`, `confidence_score`, and `resolution_method`.
-
-### 4.2. Strict 24-Hour Freshness Window
-- News and job records must have confirmed publication timestamps strictly within the preceding 24 hours UTC.
-- Records with unverified or stale dates are rejected with explicit reasons recorded in the audit log. The system never substitutes collection timestamps for publication dates.
-
-### 4.3. Multi-Provider LLM Fallback
-- Strict priority hierarchy: **1. Gemini** $\rightarrow$ **2. Groq** $\rightarrow$ **3. DeepSeek**.
-- Automatic fallback on timeouts, HTTP 429 rate limits, and JSON errors.
-- Robust deterministic fallback when API keys are absent, ensuring guaranteed pipeline execution.
-
-### 4.4. Six Output Tabs / Files
-The pipeline exports 6 structured tabs matching the exact schema requirements:
-1. `data/processed/startups.csv` / `.jsonl`
-2. `data/processed/products.csv` / `.jsonl`
-3. `data/processed/research_papers.csv` / `.jsonl`
-4. `data/processed/jobs.csv` / `.jsonl`
-5. `data/processed/news.csv` / `.jsonl`
-6. `data/processed/entity_mapping_log.csv` / `.jsonl`
-
-When `GOOGLE_APPLICATION_CREDENTIALS` and `GOOGLE_SPREADSHEET_ID` are provided, all 6 tabs are automatically updated via the Google Sheets API.
 
 ---
 
-## 5. Scaling to 500,000+ Records
+## 🚀 Quick Start
 
-For enterprise-scale workloads:
-- **Database**: Swap SQLite for PostgreSQL 16 with range partitioning on `published_at`.
-- **Queuing & Workers**: Introduce Redis and Celery to distribute crawler and extraction workloads across worker nodes.
-- **Storage**: Store raw evidence in object storage (AWS S3 / GCS) referenced by URI.
-- **Deduplication**: Employ Redis Bloom Filters for $O(1)$ duplicate checking across millions of records.
-- **Vector Search**: Use pgvector / Qdrant for semantic nearest-neighbor candidate retrieval prior to fuzzy matching.
+### Prerequisites
 
-Detailed design diagrams are available in [`docs/architecture.md`](docs/architecture.md).
+| Requirement | Version | Required |
+|-------------|---------|----------|
+| Python | 3.11+ | ✅ |
+| Git | any | ✅ |
+| Docker & Docker Compose | recent | Optional |
 
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/ai-intelligence-pipeline.git
+cd ai-intelligence-pipeline
+
+# 2. Create a virtual environment (uv or python3.11 venv)
+uv venv --python 3.11 .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+# 3. Install dependencies
+uv pip install -r requirements.txt
+
+# 4. Create your environment file
+cp .env.example .env
+```
+
+### Verify with a smoke test
+
+```bash
+python src/main.py --quick-test
+```
+
+This collects ~15 records per category and verifies connectivity, validation, database insertion, and file exports.
+
+---
+
+## ⚙️ Configuration
+
+All keys are **optional**. The pipeline has automatic fallbacks, so it runs with an empty `.env`.
+
+```ini
+ENVIRONMENT=development
+LOG_LEVEL=INFO
+
+# LLM Providers (priority: Gemini -> Groq -> DeepSeek)
+GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
+DEEPSEEK_API_KEY=your_deepseek_api_key
+
+# GitHub token (raises search rate limits)
+GITHUB_TOKEN=your_github_token
+
+# Google Sheets export (optional service account)
+GOOGLE_APPLICATION_CREDENTIALS=
+GOOGLE_SPREADSHEET_ID=
+```
+
+| Variable | Purpose | Default behavior if unset |
+|----------|---------|---------------------------|
+| `ENVIRONMENT` | Runtime profile | `development` |
+| `LOG_LEVEL` | Logging verbosity | `INFO` |
+| `GEMINI_API_KEY` | Primary LLM provider | Skip to Groq |
+| `GROQ_API_KEY` | Secondary LLM provider | Skip to DeepSeek |
+| `DEEPSEEK_API_KEY` | Tertiary LLM provider | Deterministic fallback |
+| `GITHUB_TOKEN` | Higher GitHub search limits | Unauthenticated limits |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Service account JSON path | Sheets export disabled |
+| `GOOGLE_SPREADSHEET_ID` | Target spreadsheet | Sheets export disabled |
+
+> 🔐 Secrets are masked in logs and in the diagnostics view.
+
+---
+
+## ▶️ Running the Pipeline
+
+| Mode | Command | Purpose |
+|------|---------|---------|
+| 🧪 **Smoke test** | `python src/main.py --quick-test` | ~15 records per category, fast end-to-end check |
+| 🏭 **Full production run** | `python src/main.py --target-startups 1000 --target-products 1000 --target-papers 1000` | 1,000+ startups, products, and papers, plus all qualifying 24h jobs and news |
+| 🌐 **API + Web UI** | `python src/main.py --api --port 8000` | Launches FastAPI and the web terminal |
+| 🐳 **Docker** | `docker-compose up --build -d` | Containerized deployment |
+
+### CLI flags
+
+| Flag | Description |
+|------|-------------|
+| `--quick-test` | Accelerated run with ~15 records per category |
+| `--target-startups N` | Target number of startups |
+| `--target-products N` | Target number of products |
+| `--target-papers N` | Target number of research papers |
+| `--api` | Start the FastAPI server |
+| `--port N` | Server port (used with `--api`) |
+
+---
+
+## 🖥️ Aether AI Intelligence Terminal
+
+```bash
+python src/main.py --api --port 8000
+```
+
+Open **http://localhost:8000** to access the full terminal interface.
+
+| Feature | Description |
+|---------|-------------|
+| 🎨 **Bloomberg / Linear dark UI** | High-density terminal aesthetic, 6 overview metric cards, responsive tables |
+| ⌨️ **Command palette** (`⌘K` / `Ctrl+K`) | Universal search across entities, papers, jobs, and tools |
+| 📊 **Model benchmark comparison** | Select up to 4 models from Products for a side-by-side architectural matrix |
+| 🧬 **Entity resolution & override** | Audit fuzzy-match scores and apply manual corrections via `POST /api/mappings/correct` |
+| 🔍 **Inspection drawer** | Deep metadata view, permalinks (`#<tab>/<id>`), and raw JSON provenance viewer |
+| 🔄 **11-stage ingestion modal** | Live progress bar, animated step indicators, streaming log terminal |
+| 📈 **Chart.js analytics** | Funding stages, model task pipelines, ArXiv sub-disciplines, remote-work ratio, entity confidence tiers |
+| 🩺 **Diagnostics & export hub** | DB size, WAL mode, table row counts, masked credentials, export download/regeneration |
+
+---
+
+## 📡 API Reference
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/docs` | GET | Swagger UI |
+| `/redoc` | GET | ReDoc documentation |
+| `/health` | GET | Health check |
+| `/stats` | GET | Pipeline and database statistics |
+| `/api/mappings/correct` | POST | Apply a manual canonical-name correction |
+
+Interactive docs: **Swagger** → `http://localhost:8000/docs` · **ReDoc** → `http://localhost:8000/redoc`
+
+---
+
+## 📦 Output Tabs & Files
+
+Six structured tabs are exported with schemas matching the requirements.
+
+| Tab | CSV | JSONL |
+|-----|-----|-------|
+| 1. Startups | `data/processed/startups.csv` | `data/processed/startups.jsonl` |
+| 2. Products | `data/processed/products.csv` | `data/processed/products.jsonl` |
+| 3. Research Papers | `data/processed/research_papers.csv` | `data/processed/research_papers.jsonl` |
+| 4. Jobs | `data/processed/jobs.csv` | `data/processed/jobs.jsonl` |
+| 5. News | `data/processed/news.csv` | `data/processed/news.jsonl` |
+| 6. Entity Mapping Log | `data/processed/entity_mapping_log.csv` | `data/processed/entity_mapping_log.jsonl` |
+
+> 📊 When `GOOGLE_APPLICATION_CREDENTIALS` and `GOOGLE_SPREADSHEET_ID` are set, all 6 tabs are also updated automatically through the Google Sheets API.
+
+---
+
+## 🧬 Entity Resolution
+
+Canonical name resolution keeps duplicates out and makes every decision auditable.
+
+- **Suffix stripping**: removes legal noise such as `Inc`, `LLC`, `Corp`, `Ltd`, `GmbH`, `PBC`, `Technologies`.
+- **Fuzzy matching**: RapidFuzz token sorting with a configurable similarity threshold (**≥ 85%**).
+- **Persistent audit log** recording:
+
+| Field | Description |
+|-------|-------------|
+| `raw_name` | Name as found at the source |
+| `canonical_name` | Resolved canonical entity |
+| `entity_type` | Startup, product, etc. |
+| `source` | Where the name originated |
+| `confidence_score` | Match confidence |
+| `resolution_method` | How the match was made |
+
+Manual corrections can be applied from the web terminal or via `POST /api/mappings/correct`.
+
+---
+
+## 🕒 Strict 24-Hour Freshness Window
+
+- News and job records need a **confirmed publication timestamp** within the preceding **24 hours (UTC)**.
+- Records with unverified or stale dates are **rejected**, and the reason is written to the audit log.
+- The system **never substitutes collection timestamps** for publication dates.
+
+---
+
+## 🤖 Multi-Provider LLM Fallback
+
+```mermaid
+flowchart LR
+    S[Request] --> G[1. Gemini]
+    G -- timeout / 429 / bad JSON --> Q[2. Groq]
+    Q -- timeout / 429 / bad JSON --> D[3. DeepSeek]
+    D -- all unavailable --> F[Deterministic fallback]
+```
+
+- Strict priority: **Gemini → Groq → DeepSeek**.
+- Automatic failover on **timeouts, HTTP 429 rate limits, and JSON errors**.
+- A robust **deterministic fallback** runs when no API keys are present, so the pipeline always completes.
+
+---
+
+## 🧪 Testing
+
+```bash
+pytest -v tests/
+```
+
+The suite covers:
+
+- ✅ Schema compliance
+- ✅ Entity resolution and fuzzy matching
+- ✅ Date extraction
+- ✅ 24-hour freshness rules
+
+---
+
+## 🐳 Docker Deployment
+
+```bash
+docker-compose up --build -d
+```
+
+Then open `http://localhost:8000` (or your configured port).
+
+---
+
+## 📈 Scaling to 500,000+ Records
+
+| Concern | Current | Enterprise-scale approach |
+|---------|---------|---------------------------|
+| **Database** | SQLite (WAL) | PostgreSQL 16 with range partitioning on `published_at` |
+| **Queuing & workers** | In-process async | Redis + Celery across worker nodes |
+| **Raw storage** | Local `data/raw/` | Object storage (AWS S3 / GCS) referenced by URI |
+| **Deduplication** | In-process checks | Redis Bloom Filters for O(1) duplicate checks |
+| **Candidate retrieval** | Fuzzy match | pgvector / Qdrant semantic nearest-neighbor before fuzzy matching |
+
+Detailed diagrams: [`docs/architecture.md`](docs/architecture.md)
+
+---
+
+## 📚 Documentation
+
+| Document | Contents |
+|----------|----------|
+| [`docs/architecture.md`](docs/architecture.md) | System design and the 500k+ scalability transition |
+| [`docs/limitations.md`](docs/limitations.md) | Transparent API limits and freshness constraints |
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Add tests for your change and run `pytest -v tests/`
+4. Commit and push: `git commit -m "Add your feature"`
+5. Open a pull request
+
+---
+
+## 📄 License
+
+Add your license here (for example, MIT) and include a `LICENSE` file in the repository root.
+
+---
+
+<div align="center">
+
+**Built with Python 3.11 · asyncio · Pydantic v2 · FastAPI · SQLite**
+
+⭐ Star the repo if you find it useful.
+
+</div>
