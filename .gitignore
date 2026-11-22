@@ -43,6 +43,7 @@ data/processed/*
 *.db
 *.sqlite
 *.sqlite3
+!data/ai_pipeline.db
 
 # IDEs
 .idea/

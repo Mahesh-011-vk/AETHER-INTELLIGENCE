@@ -1,3 +1,5 @@
+import os
+import shutil
 import sqlite3
 from pathlib import Path
 from typing import Generator
@@ -5,6 +7,15 @@ from contextlib import contextmanager
 from config.settings import settings
 
 def get_db_path() -> Path:
+    # If running on Vercel / AWS Lambda serverless, copy bundled database to /tmp
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+        tmp_db = Path("/tmp/ai_pipeline.db")
+        if not tmp_db.exists():
+            bundled_db = settings.ROOT_DIR / "data" / "ai_pipeline.db"
+            if bundled_db.exists():
+                shutil.copy2(bundled_db, tmp_db)
+        return tmp_db
+
     # Handle sqlite:///path/to/db
     raw_path = settings.DATABASE_URL.replace("sqlite:///", "").replace("sqlite://", "")
     db_path = Path(raw_path)
