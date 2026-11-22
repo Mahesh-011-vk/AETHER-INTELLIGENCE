@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - Aether AI Intelligence</title>
+  <meta name="description" content="Privacy disclosures, indexing procedures, and data governance for Aether AI Intelligence terminal.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-display);
+      line-height: 1.6;
+    }
+    body {
+      padding: var(--s-7) var(--s-4);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 72ch;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: var(--s-6);
+    }
+    .back-link:hover {
+      color: var(--accent-text);
+    }
+    header {
+      border-bottom: 1px solid var(--hair);
+      padding-bottom: var(--s-5);
+      margin-bottom: var(--s-6);
+    }
+    .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: var(--s-2);
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: var(--s-3);
+    }
+    .intro {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .toc {
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-md);
+      padding: var(--s-4) var(--s-5);
+      margin-bottom: var(--s-7);
+    }
+    .toc-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: var(--s-3);
+    }
+    .toc ol {
+      list-style-position: inside;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .toc li {
+      margin-bottom: var(--s-2);
+    }
+    .toc a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .toc a:hover {
+      color: var(--accent-text);
+      text-decoration: underline;
+    }
+    section {
+      margin-bottom: var(--s-7);
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--s-3);
+      padding-top: var(--s-3);
+      border-top: 1px solid var(--hair);
+    }
+    p {
+      font-size: 16px;
+      color: var(--ink);
+      margin-bottom: var(--s-4);
+    }
+    ul {
+      margin-left: var(--s-5);
+      margin-bottom: var(--s-4);
+      font-size: 15px;
+      color: var(--ink);
+    }
+    li {
+      margin-bottom: var(--s-2);
+    }
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: var(--panel-alt);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+    footer {
+      border-top: 1px solid var(--hair);
+      padding-top: var(--s-5);
+      margin-top: var(--s-8);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--s-3);
+    }
+    footer a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: var(--accent-text);
+    }
+    @media print {
+      body { background: white; color: black; padding: 0; }
+      .container { max-width: 100%; }
+      .back-link, .toc, footer { display: none; }
+      h2 { page-break-before: auto; border-top: 1px solid var(--hair); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">&larr; Return to data</a>
+    <header>
+      <div class="meta">Legal &bull; Updated November 2026</div>
+      <h1>Privacy Policy</h1>
+      <p class="intro">Aether AI Intelligence is a specialized research terminal designed for transparent discovery of public artificial intelligence assets. We believe in minimal data footprint and zero commercial tracking.</p>
+    </header>
+
+    <nav class="toc" aria-label="Table of contents">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#sources">Public Data Collection</a></li>
+        <li><a href="#storage">Storage and Telemetry</a></li>
+        <li><a href="#cookies">Local Storage &amp; Cookies</a></li>
+        <li><a href="#rights">Correction and De-indexing Procedures</a></li>
+        <li><a href="#contact">Contact and Operator Information</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="sources">
+        <h2>1. Public Data Collection</h2>
+        <p>Aether aggregates purely public metadata from authoritative developer and research channels. Our pipeline collectors query:</p>
+        <ul>
+          <li><strong>Public GitHub Repositories:</strong> Verified open-source startup and research repositories.</li>
+          <li><strong>Hugging Face Hub APIs:</strong> Public models, datasets, spaces, and papers.</li>
+          <li><strong>arXiv Interoperability API:</strong> Open-access preprints in machine learning (cs.AI, cs.LG, cs.CV, cs.CL).</li>
+          <li><strong>Open Job Feeds:</strong> Public engineering career postings published within recent intervals.</li>
+          <li><strong>Verified RSS Feeds:</strong> Industry news from official lab blogs and technical publications.</li>
+        </ul>
+        <p>No private, gated, or unauthorized data is ever indexed by our pipeline.</p>
+      </section>
+
+      <section id="storage">
+        <h2>2. Storage and Telemetry</h2>
+        <p>Aether does not maintain tracking identifiers, user surveillance graphs, or behavioral analytics profiles. Specifically:</p>
+        <ul>
+          <li><strong>Zero Third-Party Trackers:</strong> No Google Analytics, no Facebook pixels, no Segment, and no third-party CDNs.</li>
+          <li><strong>Local Database Engine:</strong> Primary indexing data resides in a local SQLite file operating in WAL mode.</li>
+          <li><strong>No Logging of Personal Identifiers:</strong> Search queries and filter parameters are processed locally on the client or within transient server sessions.</li>
+        </ul>
+      </section>
+
+      <section id="cookies">
+        <h2>3. Local Storage &amp; Cookies</h2>
+        <p>This service does not use advertising cookies. Local storage is strictly limited to:</p>
+        <ul>
+          <li><strong>Bookmarks:</strong> Saved paper and entity IDs stored locally in your browser session.</li>
+          <li><strong>Client Preferences:</strong> Active tab selection, filter presets, and table column density.</li>
+        </ul>
+      </section>
+
+      <section id="rights">
+        <h2>4. Correction and De-indexing Procedures</h2>
+        <p>Authors and organizations wishing to correct entity canonical mappings or request de-indexing of public listings can submit requests directly to our editorial review team. All requests are processed within two business days.</p>
+      </section>
+
+      <section id="contact">
+        <h2>5. Contact and Operator Information</h2>
+        <p>For questions regarding data governance, contact: <code>privacy@aether-intelligence.org</code>.</p>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; 2026 Aether AI Intelligence. All rights reserved.</span>
+      <div>
+        <a href="/terms">Terms of Service</a> &bull;
+        <a href="/">Terminal</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

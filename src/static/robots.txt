@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Disallow: /api/
+Disallow: /pipeline/
+Disallow: /download/
+
+Sitemap: http://localhost:8000/sitemap.xml
+

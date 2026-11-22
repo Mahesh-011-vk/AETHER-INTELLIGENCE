@@ -1,0 +1,112 @@
+/* ==========================================================================
+   AETHER AI INTELLIGENCE - DESIGN SYSTEM TOKENS (STUDIO DIRECTION)
+   All hex values across the entire application are strictly centralized here.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/static/assets/fonts/InterTight-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/static/assets/fonts/InterTight-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/static/assets/fonts/InterTight-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/static/assets/fonts/InterTight-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/static/assets/fonts/InterTight-ExtraBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/static/assets/fonts/IBMPlexMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/static/assets/fonts/IBMPlexMono-Medium.woff2') format('woff2');
+}
+
+:root {
+  /* Surfaces */
+  --bg: #f4efe9;
+  --panel: #fbf8f3;
+  --panel-alt: #f0eae1;
+
+  /* Ink / Text */
+  --ink: #0f0f0f;
+  --muted: #5f5b55;
+  --faint: #9c9589;
+
+  /* Hairlines and Borders */
+  --hair: #dcd5cb;
+  --line: #0f0f0f;
+
+  /* Accent: Vivid Studio Orange */
+  --accent: #f04e00;
+  --accent-text: #b83f00;
+  --on-accent: #0f0f0f;
+
+  /* Black CTA Band */
+  --black: #0f0f0f;
+  --on-dark: #f4efe9;
+  --on-dark-muted: #b9b2a7;
+
+  /* Focus Ring */
+  --focus: #f04e00;
+
+  /* System Semantics */
+  --ok: #15803d;
+  --warn: #b45309;
+  --danger: #b91c1c;
+
+  /* Typography */
+  --font-display: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Radii (Hard rule: max 4px controls, max 6px panels) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  /* Spacing Scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+}

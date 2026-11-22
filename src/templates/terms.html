@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - Aether AI Intelligence</title>
+  <meta name="description" content="Terms of service, public data interoperability terms, and attribution disclosures for Aether AI Intelligence.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-display);
+      line-height: 1.6;
+    }
+    body {
+      padding: var(--s-7) var(--s-4);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 72ch;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      margin-bottom: var(--s-6);
+    }
+    .back-link:hover {
+      color: var(--accent-text);
+    }
+    header {
+      border-bottom: 1px solid var(--hair);
+      padding-bottom: var(--s-5);
+      margin-bottom: var(--s-6);
+    }
+    .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: var(--s-2);
+    }
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: var(--s-3);
+    }
+    .intro {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .toc {
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-md);
+      padding: var(--s-4) var(--s-5);
+      margin-bottom: var(--s-7);
+    }
+    .toc-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: var(--s-3);
+    }
+    .toc ol {
+      list-style-position: inside;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .toc li {
+      margin-bottom: var(--s-2);
+    }
+    .toc a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .toc a:hover {
+      color: var(--accent-text);
+      text-decoration: underline;
+    }
+    section {
+      margin-bottom: var(--s-7);
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--s-3);
+      padding-top: var(--s-3);
+      border-top: 1px solid var(--hair);
+    }
+    p {
+      font-size: 16px;
+      color: var(--ink);
+      margin-bottom: var(--s-4);
+    }
+    ul {
+      margin-left: var(--s-5);
+      margin-bottom: var(--s-4);
+      font-size: 15px;
+      color: var(--ink);
+    }
+    li {
+      margin-bottom: var(--s-2);
+    }
+    .callout {
+      background: var(--panel-alt);
+      border-left: 3px solid var(--accent);
+      padding: var(--s-4);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: var(--s-4) 0;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    footer {
+      border-top: 1px solid var(--hair);
+      padding-top: var(--s-5);
+      margin-top: var(--s-8);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--s-3);
+    }
+    footer a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: var(--accent-text);
+    }
+    @media print {
+      body { background: white; color: black; padding: 0; }
+      .container { max-width: 100%; }
+      .back-link, .toc, footer { display: none; }
+      h2 { page-break-before: auto; border-top: 1px solid var(--hair); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">&larr; Return to data</a>
+    <header>
+      <div class="meta">Legal &bull; Updated November 2026</div>
+      <h1>Terms of Service</h1>
+      <p class="intro">These terms govern access to the Aether AI Intelligence platform, programmatic endpoints, and public data downloads.</p>
+    </header>
+
+    <nav class="toc" aria-label="Table of contents">
+      <div class="toc-title">Contents</div>
+      <ol>
+        <li><a href="#acceptance">Acceptance of Terms</a></li>
+        <li><a href="#attribution">Source Attributions and Interoperability</a></li>
+        <li><a href="#api">API Usage and Fair Limits</a></li>
+        <li><a href="#disclaimer">No Financial or Investment Advice</a></li>
+        <li><a href="#modifications">Service Availability and Amendments</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="acceptance">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing or querying the Aether AI Intelligence terminal, you agree to comply with all applicable local, national, and international laws governing public data reuse, research citation, and computational access.</p>
+      </section>
+
+      <section id="attribution">
+        <h2>2. Source Attributions and Interoperability</h2>
+        <p>Aether indexes research, repositories, and products while preserving exact author attribution and canonical source identifiers. All users are expected to honor the licensing of upstream publishers.</p>
+        <div class="callout">
+          <strong>Mandatory Academic Notice:</strong> Thank you to arXiv for use of its open access interoperability. arXiv preprints remain under the respective licenses specified by their authors.
+        </div>
+        <p>Hugging Face Hub assets, GitHub open-source repositories, and job postings remain the intellectual property of their original creators and platforms.</p>
+      </section>
+
+      <section id="api">
+        <h2>3. API Usage and Fair Limits</h2>
+        <p>Public API endpoints are provided for individual research, open verification, and developer testing. Automated scrapers and batch collectors must respect rate headers and maintain an identifiable user agent.</p>
+      </section>
+
+      <section id="disclaimer">
+        <h2>4. No Financial or Investment Advice</h2>
+        <p>Information presented through Aether AI Intelligence is aggregated algorithmically from public registries for research purposes only. Nothing on this platform constitutes venture capital investment advice, legal counsel, or financial recommendation.</p>
+      </section>
+
+      <section id="modifications">
+        <h2>5. Service Availability and Amendments</h2>
+        <p>We maintain continuous uptime but reserve the right to modify API endpoints, database schemas, and export formats as research standards evolve.</p>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; 2026 Aether AI Intelligence. All rights reserved.</span>
+      <div>
+        <a href="/privacy">Privacy Policy</a> &bull;
+        <a href="/">Terminal</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

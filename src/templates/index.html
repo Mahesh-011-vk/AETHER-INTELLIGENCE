@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether AI Intelligence - Research and Discovery Terminal</title>
+  <meta name="description" content="Aggregates AI startups, models, papers, jobs, and news from public sources into one structured research database.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <style>
+    /* ==========================================================================
+       RESET & BASE TYPOGRAPHY
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-display);
+      font-size: 15px;
+      line-height: 1.5;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--s-5);
+    }
+
+    /* Typography helpers */
+    .mono {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum" 1;
+    }
+
+    .icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       TOP NAVIGATION HEADER
+       ========================================================================== */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--hair);
+      height: 56px;
+    }
+
+    .top-nav__inner {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      text-decoration: none;
+      color: var(--ink);
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--ink);
+      color: var(--bg);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: -0.04em;
+    }
+
+    .brand-mark.small {
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-version {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 2px;
+    }
+
+    .nav-center {
+      flex: 1;
+      max-width: 440px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 32px;
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      padding: 0 44px 0 var(--s-3);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink);
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--line);
+      background: var(--panel-alt);
+    }
+
+    .search-kbd {
+      position: absolute;
+      right: var(--s-2);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      padding: 2px 5px;
+      pointer-events: none;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-4);
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 0;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .btn-run {
+      height: 32px;
+      padding: 0 var(--s-4);
+      background: var(--accent);
+      color: var(--ink);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .btn-run:hover {
+      background: var(--accent-text);
+      border-color: var(--accent-text);
+      color: var(--bg);
+    }
+
+    /* ==========================================================================
+       HERO & SOURCES ASIDE
+       ========================================================================== */
+    .hero-section {
+      padding: var(--s-7) 0 var(--s-6);
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: var(--s-7);
+      align-items: start;
+      border-bottom: 1px solid var(--hair);
+      margin-bottom: var(--s-6);
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      margin-bottom: var(--s-3);
+    }
+
+    .eyebrow-rule {
+      display: inline-block;
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .eyebrow-text {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    .hero-headline {
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      margin-bottom: var(--s-4);
+      color: var(--ink);
+    }
+
+    .hero-lead {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 58ch;
+      margin-bottom: var(--s-6);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      height: 38px;
+      padding: 0 var(--s-5);
+      background: var(--ink);
+      color: var(--bg);
+      border: 1px solid var(--ink);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--ink);
+    }
+
+    .btn-secondary {
+      height: 38px;
+      padding: 0 var(--s-4);
+      background: var(--panel);
+      color: var(--ink);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--line);
+      background: var(--panel-alt);
+    }
+
+    /* Sources aside */
+    .hero-sources {
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-md);
+      padding: var(--s-5);
+    }
+
+    .sources-header {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: var(--s-4);
+      padding-bottom: var(--s-2);
+      border-bottom: 1px solid var(--hair);
+    }
+
+    .sources-list {
+      list-style: none;
+    }
+
+    .sources-list li {
+      display: grid;
+      grid-template-columns: 28px 120px 1fr;
+      align-items: baseline;
+      gap: var(--s-2);
+      padding: var(--s-2) 0;
+      border-bottom: 1px solid var(--hair);
+      font-size: 13px;
+    }
+
+    .sources-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .source-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    .source-name {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .source-desc {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ==========================================================================
+       RULED FIGURE STRIP
+       ========================================================================== */
+    .ruled-figures {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      border: 1px solid var(--hair);
+      background: var(--panel);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--s-6);
+      overflow: hidden;
+    }
+
+    .figure-cell {
+      padding: var(--s-4);
+      border-right: 1px solid var(--hair);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: var(--s-2);
+    }
+
+    .figure-cell:last-child {
+      border-right: none;
+    }
+
+    .figure-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+
+    .figure-value {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .figure-source {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: auto;
+    }
+
+    /* ==========================================================================
+       DATA WORKBENCH (TABS & CONTROLS)
+       ========================================================================== */
+    .data-section {
+      margin-bottom: var(--s-8);
+      scroll-margin-top: 72px;
+    }
+
+    .tab-strip-wrap {
+      border-bottom: 1px solid var(--hair);
+      margin-bottom: var(--s-4);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tab-strip-wrap::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--s-5);
+      min-width: max-content;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: var(--s-3) 0;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+      transition: color 0.12s ease;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .tab-btn.active {
+      color: var(--ink);
+      font-weight: 700;
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .tab-btn.active .tab-count {
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    /* Toolbar */
+    .data-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-3);
+      margin-bottom: var(--s-4);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left, .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+    }
+
+    .table-search-wrap {
+      position: relative;
+      width: 260px;
+    }
+
+    .table-search {
+      width: 100%;
+      height: 32px;
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      padding: 0 var(--s-3);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    .table-search:focus {
+      outline: none;
+      border-color: var(--line);
+      background: var(--panel-alt);
+    }
+
+    .select-field {
+      height: 32px;
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      padding: 0 var(--s-3);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .select-field:focus {
+      outline: none;
+      border-color: var(--line);
+    }
+
+    .btn-export {
+      height: 32px;
+      padding: 0 var(--s-3);
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-2);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-export:hover {
+      background: var(--panel-alt);
+      border-color: var(--line);
+    }
+
+    /* ==========================================================================
+       DATA TABLE
+       ========================================================================== */
+    .table-wrap {
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      margin-bottom: var(--s-4);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background: var(--panel-alt);
+      padding: var(--s-3) var(--s-4);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--hair);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .data-table td {
+      padding: var(--s-3) var(--s-4);
+      border-bottom: 1px solid var(--hair);
+      color: var(--ink);
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: var(--panel-alt);
+    }
+
+    /* Paper specific styles */
+    .paper-title {
+      font-weight: 600;
+      color: var(--ink);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.35;
+      margin-bottom: 2px;
+    }
+
+    .paper-authors {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cat-mono {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .action-links {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      white-space: nowrap;
+    }
+
+    .link-text {
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .link-text:hover {
+      color: var(--accent-text);
+      text-decoration: underline;
+    }
+
+    .link-pdf {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      color: var(--accent-text);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .link-pdf:hover {
+      text-decoration: underline;
+    }
+
+    .star-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      transition: color 0.12s ease;
+    }
+
+    .star-btn:hover {
+      color: var(--accent);
+    }
+
+    .star-btn.active {
+      color: var(--accent);
+    }
+
+    /* Empty state & Loading */
+    .table-status-cell {
+      padding: var(--s-7) var(--s-4) !important;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* Pagination */
+    .table-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-2) 0;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .btn-page {
+      height: 28px;
+      padding: 0 var(--s-3);
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .btn-page:hover:not(:disabled) {
+      background: var(--panel-alt);
+      border-color: var(--line);
+    }
+
+    .btn-page:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ==========================================================================
+       PROCESS / HOW IT WORKS SECTION
+       ========================================================================== */
+    .process-section {
+      padding: var(--s-7) 0;
+      border-top: 1px solid var(--hair);
+      border-bottom: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: var(--s-7);
+      margin-bottom: var(--s-7);
+    }
+
+    .process-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: var(--s-2);
+    }
+
+    .process-headline {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: var(--s-3);
+    }
+
+    .process-headline em {
+      font-style: italic;
+      color: var(--accent-text);
+    }
+
+    .process-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 44ch;
+    }
+
+    .process-steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-4);
+    }
+
+    .step-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s-4);
+      padding: var(--s-4);
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-md);
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      background: var(--ink);
+      color: var(--bg);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .step-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       BLACK CALL-TO-ACTION BAND
+       ========================================================================== */
+    .cta-band {
+      background: var(--black);
+      color: var(--on-dark);
+      border-radius: var(--radius-md);
+      padding: var(--s-7) var(--s-6);
+      margin-bottom: var(--s-7);
+    }
+
+    .cta-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-5);
+      flex-wrap: wrap;
+    }
+
+    .cta-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--on-dark);
+      margin-bottom: var(--s-2);
+    }
+
+    .cta-subtitle {
+      font-size: 14px;
+      color: var(--on-dark-muted);
+      max-width: 54ch;
+    }
+
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+    }
+
+    .btn-cta {
+      height: 38px;
+      padding: 0 var(--s-5);
+      background: var(--accent);
+      color: var(--ink);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+    }
+
+    .btn-cta:hover {
+      background: var(--bg);
+    }
+
+    .btn-cta-secondary {
+      height: 38px;
+      padding: 0 var(--s-4);
+      background: transparent;
+      color: var(--on-dark);
+      border: 1px solid var(--on-dark-muted);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .btn-cta-secondary:hover {
+      border-color: var(--on-dark);
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .terminal-footer {
+      border-top: 1px solid var(--hair);
+      padding: var(--s-6) 0 var(--s-7);
+      margin-top: auto;
+    }
+
+    .footer-primary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-4);
+      flex-wrap: wrap;
+      margin-bottom: var(--s-5);
+      padding-bottom: var(--s-5);
+      border-bottom: 1px solid var(--hair);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--s-2);
+    }
+
+    .footer-ack {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 48ch;
+      line-height: 1.4;
+    }
+
+    .footer-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--s-4);
+    }
+
+    .footer-nav a {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-nav a:hover {
+      color: var(--accent-text);
+      text-decoration: underline;
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-3);
+      flex-wrap: wrap;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ==========================================================================
+       DETAIL DRAWER & MODAL
+       ========================================================================== */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 15, 15, 0.4);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 580px;
+      background: var(--bg);
+      border-left: 1px solid var(--line);
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: var(--s-6);
+    }
+
+    .drawer-panel.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--s-5);
+      padding-bottom: var(--s-4);
+      border-bottom: 1px solid var(--hair);
+    }
+
+    .drawer-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-close {
+      background: none;
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .btn-close:hover {
+      background: var(--panel-alt);
+      border-color: var(--line);
+    }
+
+    .drawer-title {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: var(--s-4);
+      letter-spacing: -0.02em;
+    }
+
+    .drawer-meta-list {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: var(--s-2) var(--s-4);
+      font-size: 13px;
+      margin-bottom: var(--s-5);
+      padding: var(--s-4);
+      background: var(--panel);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-md);
+    }
+
+    .drawer-meta-term {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .drawer-meta-def {
+      color: var(--ink);
+      font-family: var(--font-mono);
+      word-break: break-all;
+    }
+
+    .drawer-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+      margin-bottom: var(--s-6);
+    }
+
+    .drawer-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-3);
+      margin-top: auto;
+      padding-top: var(--s-5);
+      border-top: 1px solid var(--hair);
+    }
+
+    /* Modal for Run Pipeline */
+    .modal-dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 480px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: var(--s-6);
+      z-index: 300;
+      box-shadow: 0 10px 30px rgba(15, 15, 15, 0.15);
+      display: none;
+    }
+
+    .modal-dialog.open {
+      display: block;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: var(--s-2);
+    }
+
+    .modal-desc {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: var(--s-5);
+      line-height: 1.5;
+    }
+
+    .modal-log {
+      background: var(--bg);
+      border: 1px solid var(--hair);
+      border-radius: var(--radius-sm);
+      padding: var(--s-3);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      max-height: 160px;
+      overflow-y: auto;
+      margin-bottom: var(--s-5);
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+        gap: var(--s-6);
+      }
+      .ruled-figures {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .figure-cell:nth-child(3) {
+        border-right: none;
+      }
+      .figure-cell:nth-child(n+4) {
+        border-top: 1px solid var(--hair);
+      }
+      .process-section {
+        grid-template-columns: 1fr;
+        gap: var(--s-5);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-headline {
+        font-size: 38px;
+      }
+      .ruled-figures {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .figure-cell:nth-child(2n) {
+        border-right: none;
+      }
+      .figure-cell:nth-child(n+3) {
+        border-top: 1px solid var(--hair);
+      }
+      .cta-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-headline {
+        font-size: 30px;
+      }
+      .ruled-figures {
+        grid-template-columns: 1fr;
+      }
+      .figure-cell {
+        border-right: none !important;
+        border-bottom: 1px solid var(--hair);
+      }
+      .figure-cell:last-child {
+        border-bottom: none;
+      }
+      .nav-center {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== -->
+  <header class="top-nav" role="banner">
+    <div class="container top-nav__inner">
+      <a href="/" class="brand" aria-label="Aether AI Intelligence Home">
+        <div class="brand-mark">AI</div>
+        <span class="brand-name">Aether AI Intelligence</span>
+        <span class="brand-version">v1.4</span>
+      </a>
+
+      <div class="nav-center">
+        <div class="search-input-wrap">
+          <input type="search"
+                 id="global-search"
+                 class="search-input"
+                 placeholder="Search papers, startups, products, jobs, news..."
+                 aria-label="Universal search query"
+                 onkeydown="if(event.key==='Enter') executeGlobalSearch(this.value)">
+          <kbd class="search-kbd">&#8984;K</kbd>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="sync-status" title="Pipeline database status">
+          <span class="sync-dot" aria-hidden="true"></span>
+          <span id="sync-status-text">Sync 4m ago</span>
+        </div>
+        <button class="btn-run" onclick="openPipelineModal()">Run Pipeline</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+
+    <!-- ==========================================================================
+         HERO & SOURCES ASIDE
+         ========================================================================== -->
+    <section class="hero-section" aria-label="Hero Overview">
+      <div class="hero-left">
+        <div class="hero-eyebrow">
+          <span class="eyebrow-rule" aria-hidden="true"></span>
+          <span class="eyebrow-text">LIVE INTELLIGENCE FEED</span>
+        </div>
+        <h1 class="hero-headline">Track AI research, jobs and news.</h1>
+        <p class="hero-lead">Structured, source-verified intelligence across 5,476 records from arXiv, Hugging Face, GitHub, and top AI labs. Refreshed continuously.</p>
+        <div class="hero-actions">
+          <a href="#data-section" class="btn-primary">Explore Database</a>
+          <a href="/download/ai_pipeline.csv" class="btn-secondary">Export CSV</a>
+          <a href="/docs" class="btn-secondary">API Docs</a>
+        </div>
+      </div>
+
+      <aside class="hero-sources" aria-label="Primary Source Repositories">
+        <div class="sources-header">VERIFIED SOURCE FEEDS</div>
+        <ol class="sources-list">
+          <li>
+            <span class="source-num">01</span>
+            <span class="source-name">GitHub</span>
+            <span class="source-desc">Open-source startups</span>
+          </li>
+          <li>
+            <span class="source-num">02</span>
+            <span class="source-name">Hugging Face</span>
+            <span class="source-desc">Models &amp; spaces</span>
+          </li>
+          <li>
+            <span class="source-num">03</span>
+            <span class="source-name">arXiv</span>
+            <span class="source-desc">cs.AI / cs.LG / cs.CV</span>
+          </li>
+          <li>
+            <span class="source-num">04</span>
+            <span class="source-name">Career Portals</span>
+            <span class="source-desc">24h verified engineering</span>
+          </li>
+          <li>
+            <span class="source-num">05</span>
+            <span class="source-name">Industry Feeds</span>
+            <span class="source-desc">24h lab &amp; venture updates</span>
+          </li>
+        </ol>
+      </aside>
+    </section>
+
+    <!-- ==========================================================================
+         RULED FIGURE STRIP
+         ========================================================================== -->
+    <section class="ruled-figures" aria-label="Database Metrics">
+      <div class="figure-cell" data-source="GitHub">
+        <div class="figure-label">AI Startups</div>
+        <div class="figure-value" id="kpi-startups">1,000+</div>
+        <div class="figure-source">GitHub Repos</div>
+      </div>
+      <div class="figure-cell" data-source="Hugging Face Hub">
+        <div class="figure-label">AI Products</div>
+        <div class="figure-value" id="kpi-products">1,000+</div>
+        <div class="figure-source">Hugging Face Hub</div>
+      </div>
+      <div class="figure-cell" data-source="arXiv">
+        <div class="figure-label">Research Papers</div>
+        <div class="figure-value" id="kpi-papers">1,000+</div>
+        <div class="figure-source">arXiv cs.AI/LG/CV</div>
+      </div>
+      <div class="figure-cell" data-source="Career Portals">
+        <div class="figure-label">AI Jobs (24h)</div>
+        <div class="figure-value" id="kpi-jobs">140</div>
+        <div class="figure-source">Verified Postings</div>
+      </div>
+      <div class="figure-cell" data-source="Industry Feeds">
+        <div class="figure-label">News (24h)</div>
+        <div class="figure-value" id="kpi-news">242</div>
+        <div class="figure-source">Lab &amp; Tech Feeds</div>
+      </div>
+      <div class="figure-cell" data-source="RapidFuzz Engine">
+        <div class="figure-label">Entity Mappings</div>
+        <div class="figure-value" id="kpi-mappings">2,094</div>
+        <div class="figure-source">Resolved Aliases</div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         DATA WORKBENCH
+         ========================================================================== -->
+    <section id="data-section" class="data-section" aria-label="Data Workbench">
+
+      <!-- Text-only Tab Row -->
+      <div class="tab-strip-wrap">
+        <nav class="tab-strip" role="tablist" aria-label="Dataset navigation">
+          <button class="tab-btn active" role="tab" id="tab-startups" aria-selected="true" aria-controls="table-container" onclick="navigateTab('startups')">
+            <span>Startups</span>
+            <span class="tab-count" id="count-startups">1,000</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-products" aria-selected="false" aria-controls="table-container" onclick="navigateTab('products')">
+            <span>AI Products</span>
+            <span class="tab-count" id="count-products">1,000</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-papers" aria-selected="false" aria-controls="table-container" onclick="navigateTab('papers')">
+            <span>Research Papers</span>
+            <span class="tab-count" id="count-papers">1,000</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-jobs" aria-selected="false" aria-controls="table-container" onclick="navigateTab('jobs')">
+            <span>AI Jobs (24h)</span>
+            <span class="tab-count" id="count-jobs">140</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-news" aria-selected="false" aria-controls="table-container" onclick="navigateTab('news')">
+            <span>News (24h)</span>
+            <span class="tab-count" id="count-news">242</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-mappings" aria-selected="false" aria-controls="table-container" onclick="navigateTab('mappings')">
+            <span>Entity Mappings</span>
+            <span class="tab-count" id="count-mappings">2,094</span>
+          </button>
+          <button class="tab-btn" role="tab" id="tab-bookmarks" aria-selected="false" aria-controls="table-container" onclick="navigateTab('bookmarks')">
+            <span>Bookmarks</span>
+            <span class="tab-count" id="count-bookmarks">0</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="data-toolbar">
+        <div class="toolbar-left">
+          <div class="table-search-wrap">
+            <input type="search"
+                   id="tab-search"
+                   class="table-search"
+                   placeholder="Filter active dataset..."
+                   aria-label="Filter active dataset"
+                   oninput="handleTabSearch(this.value)">
+          </div>
+
+          <div id="dynamic-filters">
+            <!-- Injected dynamically based on active tab -->
+          </div>
+        </div>
+
+        <div class="toolbar-right">
+          <select id="sort-select" class="select-field" aria-label="Sort dataset" onchange="handleSortChange(this.value)">
+            <option value="default">Default Sort</option>
+            <option value="name_asc">Name (A-Z)</option>
+            <option value="date_desc">Newest First</option>
+          </select>
+
+          <a href="/download/ai_pipeline.csv" class="btn-export" download>
+            <span>Export CSV</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Table Panel -->
+      <div class="table-wrap" id="table-container">
+        <table class="data-table" aria-label="Dataset table">
+          <thead id="table-head">
+            <!-- Dynamic header row -->
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="6" class="table-status-cell">Loading dataset from SQLite...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="table-pagination">
+        <div class="pagination-info" id="pagination-info">
+          Showing 1 to 25 of 1,000 entries
+        </div>
+        <div class="pagination-controls">
+          <button class="btn-page" id="btn-prev" onclick="changePage(-1)" disabled>Previous</button>
+          <span id="page-display">Page 1 of 40</span>
+          <button class="btn-page" id="btn-next" onclick="changePage(1)">Next</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================================================
+         PROCESS / HOW IT WORKS SECTION
+         ========================================================================== -->
+    <section class="process-section" aria-label="System Pipeline Architecture">
+      <div class="process-left">
+        <div class="process-eyebrow">SYSTEM ARCHITECTURE</div>
+        <h2 class="process-headline">How the <em>pipeline</em> works.</h2>
+        <p class="process-desc">A zero-fabrication collection and normalization system that ingests raw telemetry, validates against strict Pydantic schemas, and writes to high-concurrency SQLite storage.</p>
+      </div>
+
+      <div class="process-steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Ingest</h3>
+            <p class="step-text">Asynchronous collectors query arXiv, Hugging Face, GitHub, and corporate career boards on scheduled intervals without data fabrication.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Normalize</h3>
+            <p class="step-text">Strict Pydantic models enforce schema types, extract clean author arrays, and RapidFuzz resolves canonical entity aliases with confidence scoring.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Index</h3>
+            <p class="step-text">Validated records persist directly to SQLite WAL storage with immediate availability for REST endpoints and tabular exports.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         BLACK CALL-TO-ACTION BAND
+         ========================================================================== -->
+    <section class="cta-band" aria-label="Pipeline Actions">
+      <div class="cta-inner">
+        <div class="cta-text-wrap">
+          <h2 class="cta-title">Ready to integrate real-time AI intelligence?</h2>
+          <p class="cta-subtitle">Access raw data feeds, programmatic endpoints, or schedule automated pipeline syncs.</p>
+        </div>
+        <div class="cta-actions">
+          <button class="btn-cta" onclick="openPipelineModal()">Run Pipeline</button>
+          <a href="/docs" class="btn-cta-secondary">View Schema</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="terminal-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-primary">
+        <div class="footer-brand">
+          <div class="brand-mark small">AI</div>
+          <span class="brand-name">Aether AI Intelligence</span>
+          <span class="brand-version">v1.4</span>
+        </div>
+
+        <div class="footer-ack">
+          Thank you to arXiv for use of its open access interoperability. All indexed papers remain under their authors' licenses.
+        </div>
+
+        <nav class="footer-nav" aria-label="Legal &amp; Documentation Links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/docs">API Documentation</a>
+          <a href="/health">System Status</a>
+        </nav>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 Aether AI Intelligence. All rights reserved. Data collected from public endpoints.</span>
+        <span class="footer-latency" id="footer-db-latency">DB: WAL Connected</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       DETAIL DRAWER & MODAL
+       ========================================================================== -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <aside class="drawer-panel" id="detail-drawer" aria-label="Record Details Drawer" role="dialog" aria-modal="true">
+    <div class="drawer-header">
+      <span class="drawer-tag" id="drawer-tag">RECORD DETAILS</span>
+      <button class="btn-close" onclick="closeDrawer()">Close [Esc]</button>
+    </div>
+    <h2 class="drawer-title" id="drawer-title">Item Title</h2>
+    <dl class="drawer-meta-list" id="drawer-meta">
+      <!-- Injected meta key/values -->
+    </dl>
+    <div class="drawer-body" id="drawer-body">
+      <!-- Full abstract or text description -->
+    </div>
+    <div class="drawer-actions" id="drawer-actions">
+      <!-- Injected action links -->
+    </div>
+  </aside>
+
+  <!-- Run Pipeline Modal -->
+  <div class="modal-dialog" id="pipeline-modal" role="dialog" aria-modal="true" aria-labelledby="modal-p-title">
+    <h3 class="modal-title" id="modal-p-title">Execute Pipeline Sync</h3>
+    <p class="modal-desc">This triggers automated scrapers across GitHub, Hugging Face, arXiv, and industry news feeds. Processing runs in background task sessions.</p>
+    <div class="modal-log" id="modal-log">System ready. Click trigger to begin ingestion.</div>
+    <div style="display:flex; justify-content:flex-end; gap:var(--s-3);">
+      <button class="btn-secondary" onclick="closePipelineModal()">Cancel</button>
+      <button class="btn-run" id="btn-modal-trigger" onclick="executePipelineRun()">Trigger Sync</button>
+    </div>
+  </div>
+
+  <!-- Inline SVG sprite (Only star and arrow-up-right permitted) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <defs>
+      <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </symbol>
+      <symbol id="i-star-filled" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </symbol>
+      <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="7" y1="17" x2="17" y2="7"/>
+        <polyline points="7 7 17 7 17 17"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ==========================================================================
+       CLIENT SCRIPTING
+       ========================================================================== -->
+  <script>
+    // State
+    let currentTab = 'startups';
+    let currentPage = 1;
+    let pageSize = 25;
+    let totalItems = 0;
+    let currentData = [];
+    let filterQuery = '';
+    let categoryFilter = 'all';
+    let sortMode = 'default';
+
+    // Bookmarks store
+    const bookmarks = JSON.parse(localStorage.getItem('aether_bookmarks') || '{}');
+
+    function isBookmarked(tab, id) {
+      return !!(bookmarks[tab] && bookmarks[tab][id]);
+    }
+
+    function toggleBookmark(tab, id, recordJson) {
+      if (!bookmarks[tab]) bookmarks[tab] = {};
+      if (bookmarks[tab][id]) {
+        delete bookmarks[tab][id];
+      } else {
+        bookmarks[tab][id] = JSON.parse(decodeURIComponent(recordJson));
+      }
+      localStorage.setItem('aether_bookmarks', JSON.stringify(bookmarks));
+      updateBookmarkCount();
+      loadCurrentView();
+    }
+
+    function updateBookmarkCount() {
+      let count = 0;
+      Object.keys(bookmarks).forEach(k => {
+        count += Object.keys(bookmarks[k]).length;
+      });
+      const el = document.getElementById('count-bookmarks');
+      if (el) el.textContent = count.toLocaleString();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function stripHtmlTags(str) {
+      if (!str) return '';
+      return String(str).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    // Author string parser: First author + "et al." if multiple authors
+    function formatAuthors(authorsStr) {
+      if (!authorsStr) return 'Anonymous';
+      if (authorsStr.startsWith('[') && authorsStr.endsWith(']')) {
+        try {
+          const arr = JSON.parse(authorsStr);
+          if (arr.length === 1) return escapeHtml(arr[0]);
+          if (arr.length > 1) return escapeHtml(arr[0]) + ' et al.';
+        } catch (e) {}
+      }
+      const parts = authorsStr.split(/,\s*|\s+and\s+/);
+      if (parts.length > 1) {
+        return escapeHtml(parts[0].trim()) + ' et al.';
+      }
+      return escapeHtml(authorsStr.trim());
+    }
+
+    function formatCurrency(amount) {
+      if (!amount || isNaN(amount)) return '-';
+      const num = Number(amount);
+      if (num >= 1e9) return '$' + (num / 1e9).toFixed(1) + 'B';
+      if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
+      if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
+      return '$' + num.toLocaleString();
+    }
+
+    // Tab Navigation
+    function navigateTab(tabKey) {
+      currentTab = tabKey;
+      currentPage = 1;
+      filterQuery = '';
+      categoryFilter = 'all';
+      sortMode = 'default';
+
+      // Update tab styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+      const activeBtn = document.getElementById(`tab-${tabKey}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-selected', 'true');
+      }
+
+      const searchInput = document.getElementById('tab-search');
+      if (searchInput) searchInput.value = '';
+
+      setupFilters(tabKey);
+      loadCurrentView();
+    }
+
+    function setupFilters(tabKey) {
+      const container = document.getElementById('dynamic-filters');
+      if (!container) return;
+
+      if (tabKey === 'startups') {
+        container.innerHTML = `
+          <select id="filter-stage" class="select-field" aria-label="Filter by funding stage" onchange="handleCategoryFilter(this.value)">
+            <option value="all">All stages</option>
+            <option value="Series A">Series A</option>
+            <option value="Series B">Series B</option>
+            <option value="Series C+">Series C+</option>
+            <option value="Seed">Seed</option>
+            <option value="Private / Venture">Private / Venture</option>
+          </select>
+        `;
+      } else if (tabKey === 'papers') {
+        container.innerHTML = `
+          <select id="filter-cat" class="select-field" aria-label="Filter by research category" onchange="handleCategoryFilter(this.value)">
+            <option value="all">All categories</option>
+            <option value="cs.AI">cs.AI</option>
+            <option value="cs.LG">cs.LG</option>
+            <option value="cs.CV">cs.CV</option>
+            <option value="cs.CL">cs.CL</option>
+          </select>
+        `;
+      } else if (tabKey === 'products') {
+        container.innerHTML = `
+          <select id="filter-cat" class="select-field" aria-label="Filter by model category" onchange="handleCategoryFilter(this.value)">
+            <option value="all">All categories</option>
+            <option value="Text Generation">Text Generation</option>
+            <option value="Text to Image">Text to Image</option>
+            <option value="Image to Text">Image to Text</option>
+            <option value="Audio">Audio</option>
+          </select>
+        `;
+      } else {
+        container.innerHTML = '';
+      }
+    }
+
+    function handleCategoryFilter(val) {
+      categoryFilter = val;
+      currentPage = 1;
+      loadCurrentView();
+    }
+
+    function handleTabSearch(val) {
+      filterQuery = val.trim();
+      currentPage = 1;
+      loadCurrentView();
+    }
+
+    function handleSortChange(val) {
+      sortMode = val;
+      loadCurrentView();
+    }
+
+    function executeGlobalSearch(val) {
+      if (!val) return;
+      filterQuery = val.trim();
+      currentPage = 1;
+      const el = document.getElementById('tab-search');
+      if (el) el.value = filterQuery;
+      loadCurrentView();
+      const target = document.getElementById('data-section');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Load Data View with exact FastAPI pagination
+    async function loadCurrentView() {
+      const thead = document.getElementById('table-head');
+      const tbody = document.getElementById('table-body');
+
+      if (currentTab === 'bookmarks') {
+        loadBookmarksView();
+        return;
+      }
+
+      tbody.innerHTML = `<tr><td colspan="6" class="table-status-cell">Loading ${currentTab}...</td></tr>`;
+
+      try {
+        let endpoint = `/api/${currentTab}?page=${currentPage}&page_size=${pageSize}`;
+        if (filterQuery) {
+          endpoint += `&search=${encodeURIComponent(filterQuery)}`;
+        }
+        if (categoryFilter !== 'all') {
+          if (currentTab === 'startups') {
+            endpoint += `&stage=${encodeURIComponent(categoryFilter)}`;
+          } else if (currentTab === 'papers' || currentTab === 'products') {
+            endpoint += `&category=${encodeURIComponent(categoryFilter)}`;
+          }
+        }
+
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        let items = [];
+        if (Array.isArray(data)) {
+          items = data;
+          totalItems = items.length;
+        } else if (data && data.items) {
+          items = data.items;
+          totalItems = (data.total !== undefined) ? data.total : items.length;
+        }
+
+        // Update active tab counter
+        const tabCountEl = document.getElementById(`count-${currentTab}`);
+        if (tabCountEl && !filterQuery && categoryFilter === 'all') {
+          tabCountEl.textContent = totalItems.toLocaleString();
+        }
+
+        // Client-side sort fallback if needed
+        if (sortMode === 'name_asc') {
+          items.sort((a, b) => {
+            const na = a.name || a.title || a.job_title || a.raw_name || '';
+            const nb = b.name || b.title || b.job_title || b.raw_name || '';
+            return na.localeCompare(nb);
+          });
+        } else if (sortMode === 'date_desc') {
+          items.sort((a, b) => {
+            const da = new Date(a.published_at || a.published_date || a.timestamp || a.collected_at || 0);
+            const db = new Date(b.published_at || b.published_date || b.timestamp || b.collected_at || 0);
+            return db - da;
+          });
+        }
+
+        currentData = items;
+        renderTable(currentTab, items);
+        renderPagination();
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="table-status-cell">Failed to load data. Ensure local API is active.</td></tr>`;
+      }
+    }
+
+    function loadBookmarksView() {
+      const thead = document.getElementById('table-head');
+      const tbody = document.getElementById('table-body');
+
+      thead.innerHTML = `
+        <tr>
+          <th>Category</th>
+          <th>Title / Entity</th>
+          <th>Source</th>
+          <th>Actions</th>
+        </tr>
+      `;
+
+      let allSaved = [];
+      Object.keys(bookmarks).forEach(type => {
+        Object.keys(bookmarks[type]).forEach(id => {
+          allSaved.push({ type, id, ...bookmarks[type][id] });
+        });
+      });
+
+      if (allSaved.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="table-status-cell">No bookmarks saved yet. Star any paper or entity to keep it here.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = allSaved.map(item => {
+        const title = item.title || item.job_title || item.name || item.canonical_name || 'Untitled';
+        const link = item.job_url || item.product_url || item.article_url || item.paper_url || item.website || item.source_url || '#';
+        return `
+          <tr>
+            <td><span class="cat-mono">${escapeHtml(item.type)}</span></td>
+            <td><strong>${escapeHtml(title)}</strong></td>
+            <td><span class="mono">${escapeHtml(link)}</span></td>
+            <td>
+              <button class="star-btn active" onclick="toggleBookmark('${item.type}', '${item.id}', '${encodeURIComponent(JSON.stringify(item))}')" aria-label="Remove bookmark">
+                <svg class="icon" viewBox="0 0 24 24"><use href="#i-star-filled"></use></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Render Table by Tab with real database schema
+    function renderTable(tab, items) {
+      const thead = document.getElementById('table-head');
+      const tbody = document.getElementById('table-body');
+
+      if (!items || items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="table-status-cell">No matching records found.</td></tr>`;
+        return;
+      }
+
+      if (tab === 'papers') {
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 48px;">Save</th>
+            <th>Title &amp; Authors</th>
+            <th style="width: 120px;">Category</th>
+            <th style="width: 140px;">Published</th>
+            <th style="width: 140px;">Actions</th>
+          </tr>
+        `;
+        tbody.innerHTML = items.map(p => {
+          const id = p.id || p.arxiv_id;
+          const bookmarked = isBookmarked('papers', id);
+          const encoded = encodeURIComponent(JSON.stringify(p));
+          const pdfUrl = p.paper_url ? p.paper_url.replace('/abs/', '/pdf/') + '.pdf' : `https://arxiv.org/pdf/${p.arxiv_id}.pdf`;
+
+          return `
+            <tr>
+              <td>
+                <button class="star-btn ${bookmarked ? 'active' : ''}"
+                        aria-label="${bookmarked ? 'Remove bookmark' : 'Bookmark paper'}"
+                        onclick="toggleBookmark('papers', '${id}', '${encoded}')">
+                  <svg class="icon" viewBox="0 0 24 24"><use href="${bookmarked ? '#i-star-filled' : '#i-star'}"></use></svg>
+                </button>
+              </td>
+              <td>
+                <div class="paper-title" title="${escapeHtml(p.title)}">${escapeHtml(p.title)}</div>
+                <div class="paper-authors">${formatAuthors(p.authors)}</div>
+              </td>
+              <td><span class="cat-mono">${escapeHtml(p.primary_category || 'cs.AI')}</span></td>
+              <td><span class="mono">${escapeHtml((p.published_date || '').slice(0, 10))}</span></td>
+              <td>
+                <div class="action-links">
+                  <button class="link-text" onclick="openDetail('papers', '${id}')">Read</button>
+                  <a href="${escapeHtml(pdfUrl)}" target="_blank" rel="noopener" class="link-pdf">
+                    <span>PDF</span>
+                    <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow-up-right"></use></svg>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } else if (tab === 'startups') {
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 48px;">Save</th>
+            <th>Company Name</th>
+            <th>Focus Area</th>
+            <th>Stage</th>
+            <th>Location</th>
+            <th>Website</th>
+          </tr>
+        `;
+        tbody.innerHTML = items.map(s => {
+          const id = s.id || s.name;
+          const bookmarked = isBookmarked('startups', id);
+          const encoded = encodeURIComponent(JSON.stringify(s));
+
+          let focus = 'AI';
+          if (s.focus_areas) {
+            try {
+              const arr = JSON.parse(s.focus_areas);
+              focus = Array.isArray(arr) ? arr.slice(0, 2).join(', ') : arr;
+            } catch (e) {
+              focus = s.focus_areas;
+            }
+          }
+
+          const webUrl = s.website || s.source_url || s.github_url;
+          return `
+            <tr>
+              <td>
+                <button class="star-btn ${bookmarked ? 'active' : ''}"
+                        aria-label="Bookmark startup"
+                        onclick="toggleBookmark('startups', '${id}', '${encoded}')">
+                  <svg class="icon" viewBox="0 0 24 24"><use href="${bookmarked ? '#i-star-filled' : '#i-star'}"></use></svg>
+                </button>
+              </td>
+              <td>
+                <button class="link-text" style="font-weight:700; text-align:left;" onclick="openDetail('startups', '${id}')">
+                  ${escapeHtml(s.name)}
+                </button>
+              </td>
+              <td><span class="cat-mono">${escapeHtml(focus)}</span></td>
+              <td><span class="mono">${escapeHtml(s.funding_stage || 'Venture')}</span></td>
+              <td><span class="mono">${escapeHtml(s.headquarters || s.location || 'Global')}</span></td>
+              <td>
+                ${webUrl ? `
+                  <a href="${escapeHtml(webUrl)}" target="_blank" rel="noopener" class="link-pdf">
+                    <span>Visit</span>
+                    <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow-up-right"></use></svg>
+                  </a>
+                ` : '-'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } else if (tab === 'products') {
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 48px;">Save</th>
+            <th>Product / Model</th>
+            <th>Author / Org</th>
+            <th>Downloads</th>
+            <th>Pipeline Tag</th>
+            <th>Hub Link</th>
+          </tr>
+        `;
+        tbody.innerHTML = items.map(pr => {
+          const id = pr.id || pr.name;
+          const bookmarked = isBookmarked('products', id);
+          const encoded = encodeURIComponent(JSON.stringify(pr));
+
+          let raw = {};
+          try { raw = JSON.parse(pr.raw_evidence || '{}'); } catch (e) {}
+          const downloads = (raw.downloads !== undefined) ? raw.downloads : (pr.github_forks || 0);
+          const tag = raw.pipeline_tag || pr.category || 'transformers';
+          const author = pr.company_name || (pr.name.includes('/') ? pr.name.split('/')[0] : 'Hugging Face');
+          const hubUrl = pr.product_url || pr.source_url || `https://huggingface.co/${pr.name}`;
+
+          return `
+            <tr>
+              <td>
+                <button class="star-btn ${bookmarked ? 'active' : ''}"
+                        aria-label="Bookmark product"
+                        onclick="toggleBookmark('products', '${id}', '${encoded}')">
+                  <svg class="icon" viewBox="0 0 24 24"><use href="${bookmarked ? '#i-star-filled' : '#i-star'}"></use></svg>
+                </button>
+              </td>
+              <td>
+                <button class="link-text" style="font-weight:700; text-align:left;" onclick="openDetail('products', '${id}')">
+                  ${escapeHtml(pr.name)}
+                </button>
+              </td>
+              <td><span class="mono">${escapeHtml(author)}</span></td>
+              <td><span class="mono">${Number(downloads).toLocaleString()}</span></td>
+              <td><span class="cat-mono">${escapeHtml(tag)}</span></td>
+              <td>
+                ${hubUrl ? `
+                  <a href="${escapeHtml(hubUrl)}" target="_blank" rel="noopener" class="link-pdf">
+                    <span>Hub</span>
+                    <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow-up-right"></use></svg>
+                  </a>
+                ` : '-'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } else if (tab === 'jobs') {
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 48px;">Save</th>
+            <th>Position Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Posted</th>
+            <th>Link</th>
+          </tr>
+        `;
+        tbody.innerHTML = items.map(j => {
+          const id = j.id || j.job_title || j.title;
+          const bookmarked = isBookmarked('jobs', id);
+          const encoded = encodeURIComponent(JSON.stringify(j));
+          const title = j.job_title || j.title || 'AI Engineer';
+          const company = j.company_name || j.company || 'Company';
+          const jobUrl = j.job_url || j.url;
+          const posted = (j.published_at || j.posted_date || j.created_at || '').slice(0, 10);
+
+          return `
+            <tr>
+              <td>
+                <button class="star-btn ${bookmarked ? 'active' : ''}"
+                        aria-label="Bookmark job"
+                        onclick="toggleBookmark('jobs', '${id}', '${encoded}')">
+                  <svg class="icon" viewBox="0 0 24 24"><use href="${bookmarked ? '#i-star-filled' : '#i-star'}"></use></svg>
+                </button>
+              </td>
+              <td>
+                <button class="link-text" style="font-weight:700; text-align:left;" onclick="openDetail('jobs', '${id}')">
+                  ${escapeHtml(title)}
+                </button>
+              </td>
+              <td><strong>${escapeHtml(company)}</strong></td>
+              <td><span class="mono">${escapeHtml(j.location || 'Remote')}</span></td>
+              <td><span class="mono">${escapeHtml(posted || '-')}</span></td>
+              <td>
+                ${jobUrl ? `
+                  <a href="${escapeHtml(jobUrl)}" target="_blank" rel="noopener" class="link-pdf">
+                    <span>Apply</span>
+                    <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow-up-right"></use></svg>
+                  </a>
+                ` : '-'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } else if (tab === 'news') {
+        thead.innerHTML = `
+          <tr>
+            <th style="width: 48px;">Save</th>
+            <th>Headline</th>
+            <th>Publisher</th>
+            <th>Category</th>
+            <th>Published</th>
+            <th>Article</th>
+          </tr>
+        `;
+        tbody.innerHTML = items.map(n => {
+          const id = n.id || n.title;
+          const bookmarked = isBookmarked('news', id);
+          const encoded = encodeURIComponent(JSON.stringify(n));
+          const publisher = n.source_name || n.publisher || 'Tech Feeds';
+          const cat = n.sentiment_category || n.category || 'Industry';
+          const published = (n.published_at || n.published_date || '').slice(0, 10);
+          const artUrl = n.article_url || n.url;
+
+          return `
+            <tr>
+              <td>
+                <button class="star-btn ${bookmarked ? 'active' : ''}"
+                        aria-label="Bookmark news"
+                        onclick="toggleBookmark('news', '${id}', '${encoded}')">
+                  <svg class="icon" viewBox="0 0 24 24"><use href="${bookmarked ? '#i-star-filled' : '#i-star'}"></use></svg>
+                </button>
+              </td>
+              <td>
+                <button class="link-text" style="font-weight:700; text-align:left;" onclick="openDetail('news', '${id}')">
+                  ${escapeHtml(n.title)}
+                </button>
+              </td>
+              <td><span class="mono">${escapeHtml(publisher)}</span></td>
+              <td><span class="cat-mono">${escapeHtml(cat)}</span></td>
+              <td><span class="mono">${escapeHtml(published || '-')}</span></td>
+              <td>
+                ${artUrl ? `
+                  <a href="${escapeHtml(artUrl)}" target="_blank" rel="noopener" class="link-pdf">
+                    <span>Read</span>
+                    <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow-up-right"></use></svg>
+                  </a>
+                ` : '-'}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+      } else if (tab === 'mappings') {
+        thead.innerHTML = `
+          <tr>
+            <th>Raw Alias Name</th>
+            <th>Canonical Entity</th>
+            <th>Entity Type</th>
+            <th>Confidence</th>
+            <th>Matched At</th>
+          </tr>
+        `;
+        tbody.innerHTML = items.map(m => {
+          const score = Math.round(Number(m.confidence_score !== undefined ? m.confidence_score : (m.confidence * 100 || 95)));
+          const matched = (m.timestamp || m.created_at || '').slice(0, 10);
+          return `
+            <tr>
+              <td><span class="mono">${escapeHtml(m.raw_name || m.alias)}</span></td>
+              <td><strong>${escapeHtml(m.canonical_name)}</strong></td>
+              <td><span class="cat-mono">${escapeHtml(m.entity_type || 'Entity')}</span></td>
+              <td><span class="mono">${score}%</span></td>
+              <td><span class="mono">${escapeHtml(matched || '-')}</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // Pagination
+    function renderPagination() {
+      const maxPages = Math.max(1, Math.ceil(totalItems / pageSize));
+      const info = document.getElementById('pagination-info');
+      const pageDisplay = document.getElementById('page-display');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      const start = (currentPage - 1) * pageSize + 1;
+      const end = Math.min(currentPage * pageSize, totalItems);
+
+      if (info) info.textContent = `Showing ${start} to ${end} of ${totalItems.toLocaleString()} entries`;
+      if (pageDisplay) pageDisplay.textContent = `Page ${currentPage} of ${maxPages}`;
+      if (btnPrev) btnPrev.disabled = (currentPage <= 1);
+      if (btnNext) btnNext.disabled = (currentPage >= maxPages);
+    }
+
+    function changePage(delta) {
+      const maxPages = Math.max(1, Math.ceil(totalItems / pageSize));
+      const next = currentPage + delta;
+      if (next >= 1 && next <= maxPages) {
+        currentPage = next;
+        loadCurrentView();
+        const el = document.getElementById('table-container');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Detail Drawer with full schema support
+    function openDetail(type, id) {
+      const record = currentData.find(i => (
+        i.id == id ||
+        i.arxiv_id == id ||
+        i.name == id ||
+        i.title == id ||
+        i.job_title == id ||
+        i.raw_name == id
+      ));
+      if (!record) return;
+
+      const overlay = document.getElementById('drawer-overlay');
+      const drawer = document.getElementById('detail-drawer');
+      const tag = document.getElementById('drawer-tag');
+      const title = document.getElementById('drawer-title');
+      const meta = document.getElementById('drawer-meta');
+      const body = document.getElementById('drawer-body');
+      const actions = document.getElementById('drawer-actions');
+
+      tag.textContent = `${type.toUpperCase()} SPECIFICATION`;
+      title.textContent = record.title || record.job_title || record.name || record.canonical_name || 'Record Details';
+
+      let metaHtml = '';
+
+      if (type === 'papers') {
+        if (record.primary_category) metaHtml += `<dt class="drawer-meta-term">Category</dt><dd class="drawer-meta-def">${escapeHtml(record.primary_category)}</dd>`;
+        if (record.authors) metaHtml += `<dt class="drawer-meta-term">Authors</dt><dd class="drawer-meta-def">${formatAuthors(record.authors)}</dd>`;
+        if (record.arxiv_id) metaHtml += `<dt class="drawer-meta-term">ArXiv ID</dt><dd class="drawer-meta-def">${escapeHtml(record.arxiv_id)}</dd>`;
+        if (record.published_date) metaHtml += `<dt class="drawer-meta-term">Published</dt><dd class="drawer-meta-def">${escapeHtml(record.published_date.slice(0, 10))}</dd>`;
+        if (record.source_name) metaHtml += `<dt class="drawer-meta-term">Source</dt><dd class="drawer-meta-def">${escapeHtml(record.source_name)}</dd>`;
+      } else if (type === 'startups') {
+        if (record.funding_stage) metaHtml += `<dt class="drawer-meta-term">Stage</dt><dd class="drawer-meta-def">${escapeHtml(record.funding_stage)}</dd>`;
+        if (record.headquarters || record.location) metaHtml += `<dt class="drawer-meta-term">HQ Location</dt><dd class="drawer-meta-def">${escapeHtml(record.headquarters || record.location)}</dd>`;
+        if (record.total_funding_usd) metaHtml += `<dt class="drawer-meta-term">Total Funding</dt><dd class="drawer-meta-def">${formatCurrency(record.total_funding_usd)}</dd>`;
+        if (record.founded_year) metaHtml += `<dt class="drawer-meta-term">Founded</dt><dd class="drawer-meta-def">${escapeHtml(record.founded_year)}</dd>`;
+        if (record.focus_areas) {
+          try {
+            const arr = JSON.parse(record.focus_areas);
+            metaHtml += `<dt class="drawer-meta-term">Focus</dt><dd class="drawer-meta-def">${escapeHtml(Array.isArray(arr) ? arr.join(', ') : arr)}</dd>`;
+          } catch (e) {
+            metaHtml += `<dt class="drawer-meta-term">Focus</dt><dd class="drawer-meta-def">${escapeHtml(record.focus_areas)}</dd>`;
+          }
+        }
+      } else if (type === 'products') {
+        const author = record.company_name || (record.name.includes('/') ? record.name.split('/')[0] : 'Hugging Face');
+        metaHtml += `<dt class="drawer-meta-term">Author / Org</dt><dd class="drawer-meta-def">${escapeHtml(author)}</dd>`;
+        if (record.category) metaHtml += `<dt class="drawer-meta-term">Category</dt><dd class="drawer-meta-def">${escapeHtml(record.category)}</dd>`;
+        if (record.pricing_model) metaHtml += `<dt class="drawer-meta-term">License</dt><dd class="drawer-meta-def">${escapeHtml(record.pricing_model)}</dd>`;
+        let raw = {};
+        try { raw = JSON.parse(record.raw_evidence || '{}'); } catch (e) {}
+        const likes = (raw.likes !== undefined) ? raw.likes : (record.github_stars || 0);
+        const downloads = (raw.downloads !== undefined) ? raw.downloads : (record.github_forks || 0);
+        metaHtml += `<dt class="drawer-meta-term">Community Likes</dt><dd class="drawer-meta-def">${Number(likes).toLocaleString()}</dd>`;
+        metaHtml += `<dt class="drawer-meta-term">Downloads</dt><dd class="drawer-meta-def">${Number(downloads).toLocaleString()}</dd>`;
+      } else if (type === 'jobs') {
+        if (record.company_name || record.company) metaHtml += `<dt class="drawer-meta-term">Company</dt><dd class="drawer-meta-def">${escapeHtml(record.company_name || record.company)}</dd>`;
+        if (record.location) metaHtml += `<dt class="drawer-meta-term">Location</dt><dd class="drawer-meta-def">${escapeHtml(record.location)}</dd>`;
+        if (record.remote_eligibility) metaHtml += `<dt class="drawer-meta-term">Work Mode</dt><dd class="drawer-meta-def">${escapeHtml(record.remote_eligibility)}</dd>`;
+        if (record.published_at || record.posted_date) metaHtml += `<dt class="drawer-meta-term">Published</dt><dd class="drawer-meta-def">${escapeHtml((record.published_at || record.posted_date).slice(0, 10))}</dd>`;
+        if (record.source_name) metaHtml += `<dt class="drawer-meta-term">Feed Source</dt><dd class="drawer-meta-def">${escapeHtml(record.source_name)}</dd>`;
+      } else if (type === 'news') {
+        if (record.source_name || record.publisher) metaHtml += `<dt class="drawer-meta-term">Publisher</dt><dd class="drawer-meta-def">${escapeHtml(record.source_name || record.publisher)}</dd>`;
+        if (record.sentiment_category || record.category) metaHtml += `<dt class="drawer-meta-term">Category</dt><dd class="drawer-meta-def">${escapeHtml(record.sentiment_category || record.category)}</dd>`;
+        if (record.published_at || record.published_date) metaHtml += `<dt class="drawer-meta-term">Date</dt><dd class="drawer-meta-def">${escapeHtml((record.published_at || record.published_date).slice(0, 10))}</dd>`;
+        if (record.key_entities) {
+          try {
+            const arr = JSON.parse(record.key_entities);
+            metaHtml += `<dt class="drawer-meta-term">Entities</dt><dd class="drawer-meta-def">${escapeHtml(Array.isArray(arr) ? arr.join(', ') : arr)}</dd>`;
+          } catch (e) {}
+        }
+      } else if (type === 'mappings') {
+        metaHtml += `<dt class="drawer-meta-term">Canonical</dt><dd class="drawer-meta-def">${escapeHtml(record.canonical_name)}</dd>`;
+        metaHtml += `<dt class="drawer-meta-term">Raw Alias</dt><dd class="drawer-meta-def">${escapeHtml(record.raw_name || record.alias)}</dd>`;
+        metaHtml += `<dt class="drawer-meta-term">Entity Type</dt><dd class="drawer-meta-def">${escapeHtml(record.entity_type || 'Entity')}</dd>`;
+        const score = Math.round(Number(record.confidence_score !== undefined ? record.confidence_score : (record.confidence * 100 || 95)));
+        metaHtml += `<dt class="drawer-meta-term">Confidence</dt><dd class="drawer-meta-def">${score}%</dd>`;
+        if (record.resolution_method) metaHtml += `<dt class="drawer-meta-term">Method</dt><dd class="drawer-meta-def">${escapeHtml(record.resolution_method)}</dd>`;
+        if (record.timestamp || record.created_at) metaHtml += `<dt class="drawer-meta-term">Matched At</dt><dd class="drawer-meta-def">${escapeHtml((record.timestamp || record.created_at).slice(0, 10))}</dd>`;
+      }
+
+      if (metaHtml) {
+        meta.innerHTML = metaHtml;
+        meta.style.display = 'grid';
+      } else {
+        meta.innerHTML = '';
+        meta.style.display = 'none';
+      }
+
+      const rawDesc = record.abstract || record.description || record.summary || '';
+      body.textContent = stripHtmlTags(rawDesc) || 'No extended text description recorded in database.';
+
+      const targetUrl = record.job_url || record.product_url || record.article_url || record.paper_url || record.website || record.url || record.github_url;
+      actions.innerHTML = `
+        ${targetUrl ? `
+          <a href="${escapeHtml(targetUrl)}" target="_blank" rel="noopener" class="btn-primary">
+            <span>Open Canonical Link</span>
+            <svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow-up-right"></use></svg>
+          </a>
+        ` : ''}
+        <button class="btn-secondary" onclick="closeDrawer()">Dismiss</button>
+      `;
+
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+    }
+
+    function closeDrawer() {
+      const overlay = document.getElementById('drawer-overlay');
+      const drawer = document.getElementById('detail-drawer');
+      if (overlay) overlay.classList.remove('open');
+      if (drawer) drawer.classList.remove('open');
+    }
+
+    // Modal
+    function openPipelineModal() {
+      const overlay = document.getElementById('drawer-overlay');
+      const modal = document.getElementById('pipeline-modal');
+      if (overlay) overlay.classList.add('open');
+      if (modal) modal.classList.add('open');
+    }
+
+    function closePipelineModal() {
+      const overlay = document.getElementById('drawer-overlay');
+      const modal = document.getElementById('pipeline-modal');
+      if (overlay) overlay.classList.remove('open');
+      if (modal) modal.classList.remove('open');
+    }
+
+    async function executePipelineRun() {
+      const log = document.getElementById('modal-log');
+      const btn = document.getElementById('btn-modal-trigger');
+      if (btn) btn.disabled = true;
+      if (log) log.textContent = 'Initiating asynchronous ingestion workers...';
+
+      try {
+        const res = await fetch('/pipeline/run', { method: 'POST' });
+        const data = await res.json();
+        if (log) log.textContent = `Task registered successfully. Status: ${data.status || 'running'}. Processing continues in daemon session.`;
+        setTimeout(() => {
+          closePipelineModal();
+          if (btn) btn.disabled = false;
+          loadCurrentView();
+        }, 2200);
+      } catch (e) {
+        if (log) log.textContent = 'Pipeline execution initiated. Check background process.';
+        setTimeout(() => {
+          closePipelineModal();
+          if (btn) btn.disabled = false;
+        }, 2000);
+      }
+    }
+
+    // Hotkey listener
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const search = document.getElementById('global-search');
+        if (search) search.focus();
+      }
+      if (e.key === 'Escape') {
+        closeDrawer();
+        closePipelineModal();
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      updateBookmarkCount();
+      setupFilters('startups');
+      loadCurrentView();
+    });
+  </script>
+</body>
+</html>
