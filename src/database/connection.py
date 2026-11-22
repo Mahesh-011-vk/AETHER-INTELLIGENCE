@@ -11,7 +11,8 @@ def get_db_path() -> Path:
     if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
         tmp_db = Path("/tmp/ai_pipeline.db")
         if not tmp_db.exists():
-            bundled_db = settings.ROOT_DIR / "data" / "ai_pipeline.db"
+            root_dir = Path(__file__).resolve().parent.parent.parent
+            bundled_db = root_dir / "data" / "ai_pipeline.db"
             if bundled_db.exists():
                 shutil.copy2(bundled_db, tmp_db)
         return tmp_db
