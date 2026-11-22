@@ -40,6 +40,8 @@ data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/*.csv
+!data/processed/AETHER_AI_INTELLIGENCE_SUBMISSION.xlsx
 *.db
 *.sqlite
 *.sqlite3

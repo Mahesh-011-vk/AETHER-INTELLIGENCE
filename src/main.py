@@ -105,18 +105,30 @@ async def custom_404_handler(request: Request, exc: Exception):
 def download_export_file(filename: str):
     allowed_files = [
         "startups.csv", "products.csv", "research_papers.csv", "jobs.csv", "news.csv", "entity_mappings.csv",
-        "startups.jsonl", "products.jsonl", "research_papers.jsonl", "jobs.jsonl", "news.jsonl", "entity_mappings.jsonl"
+        "startups.jsonl", "products.jsonl", "research_papers.jsonl", "jobs.jsonl", "news.jsonl", "entity_mappings.jsonl",
+        "AETHER_AI_INTELLIGENCE_SUBMISSION.xlsx", "submission.xlsx"
     ]
     if filename not in allowed_files:
         raise HTTPException(status_code=404, detail="File not found or access denied")
-    file_path = settings.DATA_PROCESSED_DIR / filename
+    
+    target_name = "AETHER_AI_INTELLIGENCE_SUBMISSION.xlsx" if filename == "submission.xlsx" else filename
+    file_path = settings.DATA_PROCESSED_DIR / target_name
     if not file_path.exists():
-        # Trigger export if not yet generated
         exporter.export_all()
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Export file has not been generated yet")
-    media_type = "text/csv" if filename.endswith(".csv") else "application/jsonl"
+    
+    if filename.endswith(".xlsx"):
+        media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    elif filename.endswith(".csv"):
+        media_type = "text/csv"
+    else:
+        media_type = "application/jsonl"
     return FileResponse(path=str(file_path), filename=filename, media_type=media_type)
+
+@app.api_route("/export/submission.xlsx", methods=["GET", "HEAD"])
+def download_submission_xlsx():
+    return download_export_file("AETHER_AI_INTELLIGENCE_SUBMISSION.xlsx")
 
 @app.get("/health")
 def health_check():
